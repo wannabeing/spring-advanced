@@ -57,7 +57,7 @@ class ManagerServiceTest {
         long managerUserId = 2L;
 
         Todo todo = new Todo();
-        ReflectionTestUtils.setField(todo, "user", null);
+        ReflectionTestUtils.setField(todo, "user", null); // todo.getUser()를 null로 만듦 (NPE 발생)
 
         ManagerSaveRequest managerSaveRequest = new ManagerSaveRequest(managerUserId);
 

@@ -58,7 +58,7 @@ public class TodoService {
                 todo.getTitle(),
                 todo.getContents(),
                 todo.getWeather(),
-                new UserResponse(todo.getUser().getId(), todo.getUser().getEmail()),
+                new UserResponse(todo.getUser().getId(), todo.getUser().getEmail()), // N+1 문제 발생 해결
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         ));
@@ -68,7 +68,7 @@ public class TodoService {
         Todo todo = todoRepository.findByIdWithUser(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
-        User user = todo.getUser();
+        User user = todo.getUser(); // N+1 문제 발생 해결
 
         return new TodoResponse(
                 todo.getId(),

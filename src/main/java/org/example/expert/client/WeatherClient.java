@@ -22,30 +22,43 @@ public class WeatherClient {
         this.restTemplate = builder.build();
     }
 
+    /**
+     * 🚀 오늘 날씨 정보를 반환하는 메서드
+     * @return 오늘 날씨를 String 으로 반환
+     */
     public String getTodayWeather() {
+        // 1. 날씨 데이터 요청을 보내고 WeatherDTO 배열로 가져옴
         ResponseEntity<WeatherDto[]> responseEntity =
                 restTemplate.getForEntity(buildWeatherApiUri(), WeatherDto[].class);
-
         WeatherDto[] weatherArray = responseEntity.getBody();
+
+        // 2. 가져오기 실패하면 예외 처리
         if (!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
             throw new ServerException("날씨 데이터를 가져오는데 실패했습니다. 상태 코드: " + responseEntity.getStatusCode());
-        } else {
-            if (weatherArray == null || weatherArray.length == 0) {
-                throw new ServerException("날씨 데이터가 없습니다.");
-            }
         }
 
+        if (weatherArray == null || weatherArray.length == 0) {
+            throw new ServerException("날씨 데이터가 없습니다.");
+        }
+
+        // 3. 현재 날짜를 MM-dd 로 가져오기
         String today = getCurrentDate();
 
+        // 4. 각각의 DTO 에 접근하여 오늘날짜의 데이터를 문자열로 반환
         for (WeatherDto weatherDto : weatherArray) {
             if (today.equals(weatherDto.getDate())) {
                 return weatherDto.getWeather();
             }
         }
 
+        // 5. 오늘 날짜의 데이터가 없을 경우, 예외 처리
         throw new ServerException("오늘에 해당하는 날씨 데이터를 찾을 수 없습니다.");
     }
 
+    /**
+     * 🚀 외부 날씨 API 의 URI 를 생성하여 반환하는 메서드
+     * @return 외부 날씨 API URI
+     */
     private URI buildWeatherApiUri() {
         return UriComponentsBuilder
                 .fromUriString("https://f-api.github.io")
@@ -55,6 +68,10 @@ public class WeatherClient {
                 .toUri();
     }
 
+    /**
+     * 🚀 현재 날짜를 MM-dd 패턴으로 반환하는 메서드
+     * @return 현재 날짜를 문자열로 반환
+     */
     private String getCurrentDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
         return LocalDate.now().format(formatter);

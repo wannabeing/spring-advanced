@@ -41,7 +41,7 @@ class UserAdminControllerTest {
 		// given
 		long userId = 1L;
 		String token = jwtUtil.createToken(1L, "wannabeing@123.com", UserRole.ADMIN);
-		UserRoleChangeRequest requestDto = new UserRoleChangeRequest("ADMIN");
+		UserRoleChangeRequest requestDto = new UserRoleChangeRequest(UserRole.ADMIN);
 		String requestBody = new ObjectMapper().writeValueAsString(requestDto);
 
 		// when

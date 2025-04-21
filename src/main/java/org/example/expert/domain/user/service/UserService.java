@@ -28,14 +28,18 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidRequestException("User not found"));
 
-        if (passwordEncoder.matches(userChangePasswordRequest.getNewPassword(), user.getPassword())) {
+        validatePassword(userChangePasswordRequest, user.getPassword());
+
+        user.changePassword(passwordEncoder.encode(userChangePasswordRequest.getNewPassword()));
+    }
+
+    private void validatePassword(UserChangePasswordRequest requestDto, String userPassword){
+        if (passwordEncoder.matches(requestDto.getNewPassword(), userPassword)) {
             throw new InvalidRequestException("새 비밀번호는 기존 비밀번호와 같을 수 없습니다.");
         }
 
-        if (!passwordEncoder.matches(userChangePasswordRequest.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(requestDto.getOldPassword(), userPassword)) {
             throw new InvalidRequestException("잘못된 비밀번호입니다.");
         }
-
-        user.changePassword(passwordEncoder.encode(userChangePasswordRequest.getNewPassword()));
     }
 }

@@ -31,7 +31,7 @@ public class TodoController {
         TodoSaveResponse response = todoService.saveTodo(authUser, todoSaveRequest);
 
         return SuccessResponseDto.createResponseEntityDto(
-            HttpStatus.OK,
+            HttpStatus.CREATED,
             httpRequest.getRequestURI(),
             "성공적으로 todo 생성하였습니다.",
             response

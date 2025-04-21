@@ -9,6 +9,7 @@ import org.example.expert.domain.auth.dto.response.SigninResponse;
 import org.example.expert.domain.auth.dto.response.SignupResponse;
 import org.example.expert.domain.auth.exception.AuthException;
 import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.UserRole;
 import org.example.expert.domain.user.repository.UserRepository;
@@ -33,18 +34,18 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
-        UserRole userRole = UserRole.of(signupRequest.getUserRole());
+        UserRole userRole = signupRequest.getUserRole();
 
         User newUser = new User(
                 signupRequest.getEmail(),
                 encodedPassword,
                 userRole
         );
-        User savedUser = userRepository.save(newUser);
+        UserResponse savedUser = new UserResponse(userRepository.save(newUser));
 
         String bearerToken = jwtUtil.createToken(savedUser.getId(), savedUser.getEmail(), userRole);
 
-        return new SignupResponse(bearerToken);
+        return new SignupResponse(bearerToken, savedUser);
     }
 
     @Transactional(readOnly = true)

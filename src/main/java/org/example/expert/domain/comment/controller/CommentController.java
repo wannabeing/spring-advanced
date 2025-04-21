@@ -48,7 +48,7 @@ public class CommentController {
         List<CommentResponse> response = commentService.getComments(todoId);
 
         return SuccessResponseDto.createResponseEntityDto(
-            HttpStatus.CREATED,
+            HttpStatus.OK,
             httpRequest.getRequestURI(),
             "성공적으로 댓글을 조회하였습니다.",
             response
